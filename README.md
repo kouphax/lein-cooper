@@ -43,12 +43,12 @@ But any time you have more than one long running process (it needn't be a leinin
 
 ### user-level plugins:
 
-Put `[lein-cooper "0.1.0"]` into the `:plugins` vector of your
+Put `[lein-cooper "0.0.1"]` into the `:plugins` vector of your
 `:user` profile.
 
 ### project-level plugins:
 
-Put `[lein-cooper "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your project.clj.
+Put `[lein-cooper "0.0.1"]` into the `:plugins` vector of your project.clj.
 
 ### Create Procfile
 
