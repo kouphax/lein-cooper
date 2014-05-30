@@ -6,9 +6,9 @@
             [clojure.string :refer [split trim join]]
             [leiningen.core.main :refer [abort]]))
 
-(def pallette (cycle [:green :blue :yellow :magenta :red]))
+(def ^:private pallette (cycle [:green :blue :yellow :magenta :red]))
 
-(defn pretty-pipe [process-name process colour]
+(defn- pretty-pipe [process-name process colour]
   (doseq [stream [(:out process) (:err process)]]
     (future
       (let [output (io/reader stream) ]
@@ -17,7 +17,7 @@
             (println (str (style process-name colour) ": " out)))
           (recur (.readLine output)))))))
 
-(defn get-procs []
+(defn- get-procs []
   (with-open [buffer (io/reader "Procfile")]
     (doall
       (for [line (line-seq buffer)]
@@ -26,18 +26,18 @@
               command-seq (-> command trim (split #" "))]
           (assoc (apply sh/proc command-seq) :name name))))))
 
-(defn pipe-procs [procs]
+(defn- pipe-procs [procs]
   (let [names (map :name procs)
         colours (take (count procs) pallette)]
     (doall
       (map pretty-pipe names procs colours))))
 
-(defn ensure-procfile-exists []
+(defn- ensure-procfile-exists []
   (when-not (.exists (io/file "Procfile"))
     (println (style "Procfile does not exist" :red))
     (abort)))
 
-(defn fail [procs]
+(defn- fail [procs]
   (println (style "
 One or more processes have stopped running. In the current
 version of lein-cooper this could result in child processes
@@ -50,12 +50,45 @@ Sorry about the inconvenience." :red))
       (sh/destroy proc))
     (abort))
 
-(defn wait-for-early-exit [procs]
+(defn- wait-for-early-exit
+  "Blocks until at least one of the running processes produces an exit code
+   It is irrelevant what that code is.  If any of the stop running thats it."
+  [procs]
   (deref
     (apply primrose/first
       (map #(future (sh/exit-code %)) procs))))
 
-(defn cooper [project & args]
+(defn cooper
+  "The cooper plugin is used to combine multiple long runnning processes and
+   pipe their output and error streams to `stdout` in a distinctive manner.
+
+   Cooper follows the standard set out by Rubys Foreman gem and processes are
+   defined in a Procfile at the root of the project.  Each line is a process
+   name and related command.  A sample Procfile looks like this,
+
+       web: lein ring server
+       jsx: jsx --watch src/ build/
+
+   This example defines 2 processes web and jsx.
+
+   - web runs the ring server
+   - jsx runs the react.js precompiler in auto compile mode.
+
+   This avoids having to manage checking on multiple windows and checking their
+   output.
+
+   **CAUTION**
+
+   The JVM is super pants at managing external processes which means that when
+   a processes dies and cooper attempts to kill the other processes there may
+   be some processes left running.  This is due to the fact that when the JVM
+   kills processes it wont kill child process of that process.  There is also
+   no cross paltform way to get a handle on child processes and kill them.
+
+   However this is only an issue when a process fails.  When you manually
+   CTRL-C out of the lein cooper command everything will be shutdown as
+   expected so this issue only happens in an error case."
+  [project & args]
   (ensure-procfile-exists)
   (doto (get-procs)
         (pipe-procs)
