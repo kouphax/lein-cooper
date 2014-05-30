@@ -67,6 +67,8 @@ cljs:  lein cljsbuild auto
 web: lein simpleton 8000
 ```
 
+### Run
+
 Then just run `lein cooper`
 
 ```shell
