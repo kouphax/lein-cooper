@@ -32,9 +32,9 @@
     (doall
       (map pretty-pipe names procs colours))))
 
-(defn- ensure-procfile-exists []
-  (when-not (.exists (io/file "Procfile"))
-    (println (style "Procfile does not exist" :red))
+(defn- ensure-procfile-exists [procfile]
+  (when-not (.exists (io/file procfile))
+    (println (style (str procfile " does not exist") :red))
     (abort)))
 
 (defn- fail [procs]
@@ -89,7 +89,8 @@ Sorry about the inconvenience." :red))
    CTRL-C out of the lein cooper command everything will be shutdown as
    expected so this issue only happens in an error case."
   [project & args]
-  (ensure-procfile-exists)
+  (let [procfile (or (first args) "Procfile")]
+    (ensure-procfile-exists procfile))
   (doto (get-procs)
         (pipe-procs)
         (wait-for-early-exit)

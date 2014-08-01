@@ -1,4 +1,4 @@
-(defproject lein-cooper "0.0.1"
+(defproject lein-cooper "0.0.2"
   :description "Run and combine multiple processes as single process"
   :url "https://github.com/kouphax/lein-cooper"
   :license {:name "Eclipse Public License"
