@@ -4,7 +4,7 @@
 
 A Leiningen plugin that can be used to combine multiple long runnning processes and pipe their output and error streams to `stdout` in a distinctive manner.
 
-A __long running process__ in this case is one that runs indefinitley and requires human interaction to stop.  Cooper will not play well with something that runs for a while and stops when it is done.  Thing server processes or file watchers and auto test runners.
+A __long running process__ in this case is one that runs indefinitley and requires human interaction to stop.  Cooper will not play well with something that runs for a while and stops when it is done.  Think server processes or file watchers and auto test runners.
 
 `lein-cooper` follows the standard set out by Rubys [Foreman](https://github.com/ddollar/foreman) gem and processes are defined in a `Procfile` at the root of the project.  Each line is a process name and related command.  A sample Procfile looks like this,
 
