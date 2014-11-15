@@ -58,7 +58,7 @@ Sorry about the inconvenience." :red))
     (apply primrose/first
       (map #(future (sh/exit-code %)) procs))))
 
-(defn cooper
+(defn cooper ^:no-project-needed
   "The cooper plugin is used to combine multiple long runnning processes and
    pipe their output and error streams to `stdout` in a distinctive manner.
 
