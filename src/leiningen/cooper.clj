@@ -58,9 +58,9 @@ Sorry about the inconvenience." :red))
     (apply primrose/first
       (map #(future (sh/exit-code %)) procs))))
 
-(defn cooper ^:no-project-needed
-  "The cooper plugin is used to combine multiple long runnning processes and
-   pipe their output and error streams to `stdout` in a distinctive manner.
+(defn  ^:no-project-needed cooper
+  "Combine multiple long runnning processes and pipe their output and error
+   streams to `stdout` in a distinctive manner.
 
    Cooper follows the standard set out by Rubys Foreman gem and processes are
    defined in a Procfile at the root of the project.  Each line is a process
