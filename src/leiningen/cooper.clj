@@ -8,14 +8,44 @@
 
 (def ^:private pallette (cycle [:green :blue :yellow :magenta :red]))
 
+(def ^:private time-formatter (java.text.SimpleDateFormat. "HH:mm:ss"))
+
+(defn- current-time []
+  (.format time-formatter (java.util.Date.)))
+
 (defn- pretty-pipe [process-name process colour]
   (doseq [stream [(:out process) (:err process)]]
     (future
       (let [output (io/reader stream) ]
         (loop [out (.readLine output)]
           (when-not (nil? out)
-            (println (str (style process-name colour) ": " out)))
+            (println (str (style (str (current-time) " " process-name) colour) "| " out)))
           (recur (.readLine output)))))))
+
+(defn- calculate-padding
+  "Takes a list of process metadata and calculates the padded name. This is
+   to ensure our logging output is aligned by finding the longest process out
+   of the list and padding the other names enough so that
+
+     07:46:33 web: ...
+     07:46:34 db: ...
+     07:46:34 scheduler: ...
+
+   becomes,
+
+     07:46:33 web       : ...
+     07:46:34 db        : ...
+     07:46:34 scheduler : ...
+
+   Which is easier to skim when reading output."
+  [procs]
+  (let [characters-in-names (map #(count (:name %)) procs)
+        longest             (apply max characters-in-names)]
+    (doall
+      (for [proc procs]
+        (let [format-string (str "%-" (inc longest) "s")
+              padded-name   (format format-string (:name proc)) ]
+          (assoc proc :padded-name padded-name))))))
 
 (defn- get-procs []
   (with-open [buffer (io/reader "Procfile")]
@@ -27,7 +57,7 @@
           (assoc (apply sh/proc command-seq) :name name))))))
 
 (defn- pipe-procs [procs]
-  (let [names (map :name procs)
+  (let [names (map :padded-name procs)
         colours (take (count procs) pallette)]
     (doall
       (map pretty-pipe names procs colours))))
@@ -90,7 +120,8 @@ Sorry about the inconvenience." :red))
    expected so this issue only happens in an error case."
   [project & args]
   (ensure-procfile-exists)
-  (doto (get-procs)
+  (doto (-> (get-procs) calculate-padding)
         (pipe-procs)
         (wait-for-early-exit)
         (fail)))
+

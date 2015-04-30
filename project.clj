@@ -1,4 +1,4 @@
-(defproject lein-cooper "1.0.1"
+(defproject lein-cooper "1.1.1"
   :description "Run and combine multiple processes as single process"
   :url "https://github.com/kouphax/lein-cooper"
   :license {:name "Eclipse Public License"
@@ -6,4 +6,6 @@
   :dependencies [[me.raynes/conch "0.7.0"]
                  [primrose "0.1.0"]
                  [clansi "1.0.0"]]
+  :scm { :name "git"
+         :url  "https://github.com/kouphax/lein-cooper" }
   :eval-in-leiningen true)

@@ -12,7 +12,7 @@ A __long running process__ in this case is one that runs indefinitley and requir
 
 ```
 web: lein ring server
- jsx: jsx --watch src/ build/
+jsx: jsx --watch src/ build/
 ```
 
 This example defines 2 processes web and jsx.
@@ -25,9 +25,9 @@ This avoids having to manage checking on multiple windows and checking their out
 When processes spit out information to their `out` or `err` streams they are labelled and colour coded for easy distinction.
 
 > __** CAUTION **__
-> 
+>
  > The JVM is super pants at managing external processes which means that when a processes dies and cooper attempts to kill the other processes there may be some processes left running.  This is due to the fact that when the JVM kills processes it wont kill child process of that process.  There is also no cross paltform way to get a handle on child processes and kill them.
-> 
+>
 > However this is only an issue when a process fails.  When you manually CTRL-C out of the lein cooper command everything will be shutdown as expected so this issue only happens in an error case.
 
 ## Use Cases
@@ -45,12 +45,12 @@ But any time you have more than one long running process (it needn't be a leinin
 
 ### user-level plugins:
 
-Put `[lein-cooper "0.0.1"]` into the `:plugins` vector of your
+Put `[lein-cooper "1.1.1"]` into the `:plugins` vector of your
 `:user` profile.
 
 ### project-level plugins:
 
-Put `[lein-cooper "0.0.1"]` into the `:plugins` vector of your project.clj.
+Put `[lein-cooper "1.1.1"]` into the `:plugins` vector of your project.clj.
 
 ### Create Procfile
 
@@ -79,7 +79,7 @@ Then just run `lein cooper`
 
 ## License
 
-Copyright © 2014 James Hughes
+Copyright © 2015 James Hughes
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
