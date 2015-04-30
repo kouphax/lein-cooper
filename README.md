@@ -1,3 +1,5 @@
+[![Clojars Project](http://clojars.org/lein-cooper/latest-version.svg)](http://clojars.org/lein-cooper)
+
 # lein-cooper
 
 > __cooper__ / co-op (per) / co-operative processes.
