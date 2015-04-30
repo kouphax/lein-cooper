@@ -69,6 +69,8 @@ cljs:  lein cljsbuild auto
 web: lein simpleton 8000
 ```
 
+The `Procfile` should live at the root of your project.
+
 ### Run
 
 Then just run `lein cooper`
