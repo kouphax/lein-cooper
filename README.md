@@ -52,7 +52,9 @@ Put `[lein-cooper "1.1.1"]` into the `:plugins` vector of your
 
 Put `[lein-cooper "1.1.1"]` into the `:plugins` vector of your project.clj.
 
-### Create Procfile
+### Manage your processes in `Procfile` or `project.clj`:
+
+#### Work with Procfile
 
 A procfile is a file containing lists of names processes,
 
@@ -71,13 +73,23 @@ web: lein simpleton 8000
 
 The `Procfile` should live at the root of your project.
 
-### Run
-
 Then just run `lein cooper`
 
 ```shell
  $ lein cooper
  ```
+
+#### Work with project.clj
+
+Alternatively, you can define your processes in `project.clj` with `:cooper`.
+
+```clojure
+:cooper {"cljs" ["lein" "cljsbuild" "auto"]
+         "web"  ["lein" "simpleton" "8000"]}
+```
+
+Then run with `lein cooper cljs web`.
+
 
 ## License
 
