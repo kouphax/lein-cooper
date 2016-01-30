@@ -51,12 +51,8 @@
   [project]
   (let [cooper (:cooper project)]
     (doall
-     (for [task (keys cooper)]
-       (let [command-seq (cooper task)]
-         (when (nil? command-seq)
-           (println (style (str "Cooper process \"" task "\" does not exist") :red))
-           (abort))
-         (assoc (apply sh/proc command-seq) :name task))))))
+     (for [proc-name (keys cooper)]
+       (assoc (apply sh/proc (cooper proc-name)) :name proc-name)))))
 
 (defn- get-procs-from-procfile []
   (with-open [buffer (io/reader "Procfile")]
@@ -78,7 +74,7 @@
     (println (style "Procfile does not exist" :red))
     (abort)))
 
-(defn- use-procfile-or-project [project args]
+(defn- use-procfile-or-project [project]
   (if (or (nil? project)
           (nil? (:cooper project)))
     (do (ensure-procfile-exists)
@@ -137,10 +133,18 @@ Sorry about the inconvenience." :red))
    CTRL-C out of the lein cooper command everything will be shutdown as
    expected so this issue only happens in an error case."
   [project & args]
-  (let [src (use-procfile-or-project project args)
-        procs (cond
-                (= src :project) (get-procs-from-project project)
-                (= src :procfile) (get-procs-from-procfile))]
+  (let [src (use-procfile-or-project project)
+        requested-proc-names (set args)
+        all-procs (cond
+                    (= src :project) (get-procs-from-project project)
+                    (= src :procfile) (get-procs-from-procfile))
+        procs (if (= 0 (count requested-proc-names))
+                all-procs
+                (filter #(requested-proc-names (:name %))
+                        all-procs))]
+    (when (= 0 (count procs))
+      (println (style (str "No valid cooper processes found.") :red))
+      (abort))
     (doto (-> procs calculate-padding)
       (pipe-procs)
       (wait-for-early-exit)
