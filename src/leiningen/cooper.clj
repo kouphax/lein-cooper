@@ -48,17 +48,17 @@
           (assoc proc :padded-name padded-name))))))
 
 (defn- get-procs-from-project
-  [project args]
+  [project]
   (let [cooper (:cooper project)]
     (doall
-     (for [task args]
+     (for [task (keys cooper)]
        (let [command-seq (cooper task)]
          (when (nil? command-seq)
            (println (style (str "Cooper process \"" task "\" does not exist") :red))
            (abort))
          (assoc (apply sh/proc command-seq) :name task))))))
 
-(defn- get-procs []
+(defn- get-procs-from-procfile []
   (with-open [buffer (io/reader "Procfile")]
     (doall
       (for [line (line-seq buffer)]
@@ -139,8 +139,8 @@ Sorry about the inconvenience." :red))
   [project & args]
   (let [src (use-procfile-or-project project args)
         procs (cond
-                (= src :project) (get-procs-from-project project args)
-                (= src :procfile) (get-procs))]
+                (= src :project) (get-procs-from-project project)
+                (= src :procfile) (get-procs-from-procfile))]
     (doto (-> procs calculate-padding)
       (pipe-procs)
       (wait-for-early-exit)
