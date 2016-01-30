@@ -73,8 +73,6 @@ web: lein simpleton 8000
 
 The `Procfile` should live at the root of your project.
 
-Then just run `lein cooper`
-
 ```shell
  $ lein cooper
  ```
@@ -88,8 +86,11 @@ Alternatively, you can define your processes in `project.clj` with `:cooper`.
          "web"  ["lein" "simpleton" "8000"]}
 ```
 
-Then run with `lein cooper cljs web`.
+### Running
 
+To run all processes, use `lein cooper`
+
+To run named processes, use something like `lein cooper cljs web`.
 
 ## License
 
