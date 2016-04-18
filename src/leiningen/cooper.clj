@@ -10,16 +10,22 @@
 
 (def ^:private time-formatter (java.text.SimpleDateFormat. "HH:mm:ss"))
 
+(def ^:private printing-lock (Object.))
+
+(defn- synchronized-println [& args]
+  (locking printing-lock
+    (apply println args)))
+
 (defn- current-time []
   (.format time-formatter (java.util.Date.)))
 
 (defn- pretty-pipe [process-name process colour]
   (doseq [stream [(:out process) (:err process)]]
     (future
-      (let [output (io/reader stream) ]
+      (let [output (io/reader stream)]
         (loop [out (.readLine output)]
           (when-not (nil? out)
-            (println (str (style (str (current-time) " " process-name) colour) "| " out)))
+            (synchronized-println (str (style (str (current-time) " " process-name) colour) "| " out)))
           (recur (.readLine output)))))))
 
 (defn- calculate-padding
