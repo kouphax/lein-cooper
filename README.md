@@ -45,12 +45,12 @@ But any time you have more than one long running process (it needn't be a leinin
 
 ### user-level plugins:
 
-Put `[lein-cooper "1.1.1"]` into the `:plugins` vector of your
+Put `[lein-cooper "1.2.2"]` into the `:plugins` vector of your
 `:user` profile.
 
 ### project-level plugins:
 
-Put `[lein-cooper "1.1.1"]` into the `:plugins` vector of your project.clj.
+Put `[lein-cooper "1.2.2"]` into the `:plugins` vector of your project.clj.
 
 ### Manage your processes in `Procfile` or `project.clj`:
 
@@ -98,3 +98,14 @@ Copyright © 2015 James Hughes
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
+
+## Contributors
+
+```
+    20  James Hughes
+     4  Mike Schaeffer
+     2  DogLooksGood
+     1  Tianshu Shi
+     1  Jon Neale
+     1  Antonin Hildebrand
+```
